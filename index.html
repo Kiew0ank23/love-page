@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff1f5">
+  <title>Một câu hỏi rất quan trọng 💌</title>
+  <style>
+    :root { color-scheme: light; --pink:#e84f83; --deep:#b92d62; --cream:#fffaf7; }
+    * { box-sizing:border-box }
+    body {
+      margin:0; min-height:100svh; display:grid; place-items:center; overflow:hidden;
+      padding:24px; font-family: ui-rounded, "Segoe UI", system-ui, sans-serif; color:#633d50;
+      background: radial-gradient(ellipse at 15% 15%,#ffe4ec 0,transparent 38%),
+                  radial-gradient(ellipse at 90% 85%,#ffdfd1 0,transparent 38%),
+                  linear-gradient(135deg,#fff7f4,#fceaf2);
+    }
+    .card { width:min(100%,470px); text-align:center; padding:36px 28px 30px; border:1px solid #ffffffc9;
+      border-radius:30px; background:#fffdf9e8; box-shadow:0 24px 70px #a84d6d24; position:relative; }
+    .eyebrow { display:inline-block; padding:7px 13px; border-radius:99px; background:#fff0f4; color:var(--deep); font-size:.82rem; font-weight:700; letter-spacing:.04em; }
+    h1 { margin:16px 0 8px; color:var(--pink); font-size:clamp(2rem,8vw,2.8rem); line-height:1.1; text-shadow:0 2px #fff; }
+    .intro { margin:0 auto 20px; max-width:330px; line-height:1.6; color:#806575; }
+    .picture { width:190px; height:190px; margin:0 auto 18px; display:block; overflow:hidden; border-radius:25px;
+      background:linear-gradient(145deg,#ffe4ee,#fff1d9); border:5px solid white; box-shadow:0 10px 28px #ce6a8a25; transform:rotate(-2deg); }
+    .picture img { display:block; width:100%; height:100%; object-fit:cover; transition:opacity .2s,transform .35s; }
+    .picture img.changing { opacity:.25; transform:scale(.96); }
+    .question { font-size:1.28rem; font-weight:800; margin:8px 0 6px; color:#b8386b; }
+    .hint { min-height:24px; margin:0 0 20px; color:#99758a; font-size:.94rem; }
+    .buttons { display:flex; justify-content:center; align-items:center; gap:12px; min-height:52px; }
+    button { border:0; border-radius:13px; padding:13px 22px; font:700 1rem inherit; font-family:inherit; font-weight:800; cursor:pointer; transition:transform .18s,filter .18s,box-shadow .18s; }
+    button:hover { filter:brightness(1.04); transform:translateY(-2px); }
+    button:focus-visible { outline:3px solid #6b9ee8; outline-offset:3px; }
+    #yes { color:white; background:linear-gradient(135deg,#f16b96,#e6477c); box-shadow:0 8px 18px #e6477c40; }
+    #no { color:#8e526b; background:#fff0f4; border:1px solid #f8d2df; }
+    .fineprint { margin:22px 0 0; font-size:.78rem; color:#b49aaa; }
+    .heart { position:fixed; bottom:-40px; pointer-events:none; animation:float-up 4.6s ease-in forwards; opacity:.8; }
+    @keyframes float-up { to { transform:translateY(-110vh) rotate(25deg); opacity:0; } }
+    .success { animation:pop .45s cubic-bezier(.2,.9,.3,1.3) both; }
+    @keyframes pop { from { transform:scale(.75); opacity:0 } to { transform:scale(1); opacity:1 } }
+    @media (max-width:420px) { .card { padding:30px 19px 24px } .picture { width:166px;height:166px } }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+  </style>
+</head>
+<body>
+  <main class="card" id="card">
+    <span class="eyebrow">💌 THÔNG BÁO KHẨN CẤP</span>
+    <h1 id="title">Này người thương ơi!</h1>
+    <p class="intro" id="intro">Anh có một câu hỏi quan trọng… quan trọng đến mức đã tập hỏi trước gương ba lần rồi đó 😳</p>
+    <div class="picture" id="picture"><img id="cat" src="https://raw.githubusercontent.com/namdosanwannabe/be-my-valentine/master/img/cat-0.jpg" alt="Mèo con dễ thương ôm trái tim" fetchpriority="high"></div>
+    <p class="question" id="question">Em có iu anh khongg?</p>
+    <p class="hint" id="hint" aria-live="polite">Em chọn thật cẩn thận nha… trái tim anh đang hồi hộp lắm 🥺</p>
+    <div class="buttons" id="buttons">
+      <button id="yes" type="button">Đồng ý 💖</button>
+      <button id="no" type="button">Để suy nghĩ 🤔</button>
+    </div>
+    <p class="fineprint">(Nút “suy nghĩ” hơi nhát thôi, đừng để bụng nha 😌)</p>
+  </main>
+  <script>
+    const noButton = document.querySelector('#no');
+    const yesButton = document.querySelector('#yes');
+    const hint = document.querySelector('#hint');
+    const card = document.querySelector('#card');
+    const picture = document.querySelector('#picture');
+    const cat = document.querySelector('#cat');
+    const teaseLines = [
+      'Ơ kìa, em chắc chưa? 🥺',
+      'Nghĩ thêm chút nữa được không? 😳',
+      'Mèo con bắt đầu buồn rồi đó… 🐱',
+      'Trái tim anh nghe thấy đó nha 💔',
+      'Thôi mà, cho anh một cơ hội đi 🥹'
+    ];
+    const catPhotos = [0, 1, 2, 3, 4, 5].map(index => `https://raw.githubusercontent.com/namdosanwannabe/be-my-valentine/master/img/cat-${index}.jpg`);
+    catPhotos.push('https://raw.githubusercontent.com/namdosanwannabe/be-my-valentine/master/img/cat-yes.jpg');
+    function changeCat(index, alt) {
+      cat.classList.add('changing');
+      const nextImage = new Image();
+      nextImage.onload = () => {
+        cat.src = nextImage.src;
+        cat.alt = alt;
+        requestAnimationFrame(() => cat.classList.remove('changing'));
+      };
+      nextImage.onerror = () => cat.classList.remove('changing');
+      nextImage.src = catPhotos[index];
+    }
+    let tease = 0;
+    noButton.addEventListener('click', () => {
+      const step = Math.min(tease, teaseLines.length - 1);
+      hint.textContent = teaseLines[step];
+      changeCat(step + 1, 'Mèo con có biểu cảm khác khi anh năn nỉ em');
+      tease++;
+      const size = 1 + Math.min(tease, 5) * 0.11;
+      yesButton.style.transform = `scale(${size})`;
+      yesButton.style.transformOrigin = 'center';
+      noButton.textContent = ['Suy nghĩ 🤔', 'Chắc chưa? 🥺', 'Năn nỉ đó 😿', 'Em nhẫn tâm ghê 💔', 'Thôi bấm có đi 💖'][step];
+      noButton.style.transform = `translate(${Math.random()*16-8}px, ${Math.random()*10-5}px)`;
+    });
+    yesButton.addEventListener('click', () => {
+      document.querySelector('#title').textContent = 'Yay, biết ngay mà!';
+      document.querySelector('#intro').textContent = 'Vậy là từ nay anh được thương em công khai rồi nhé. Không nhận đổi ý đâu… đùa thôi, anh thương em thật nhiều!';
+      changeCat(6, 'Mèo con vui vẻ khi em đồng ý');
+      document.querySelector('#question').textContent = 'Chốt đơn người yêu thành công!';
+      hint.textContent = 'Anh thương em nhất luôn 💖';
+      document.querySelector('#buttons').remove();
+      document.querySelector('.fineprint').textContent = 'Anh gửi em một cái ôm thật chặt 🤗';
+      card.classList.add('success');
+      for (let i=0;i<24;i++) setTimeout(makeHeart, i*80);
+    });
+    function makeHeart() {
+      const heart = document.createElement('span');
+      heart.className='heart'; heart.textContent=['💗','💕','💖','💘'][Math.floor(Math.random()*4)];
+      heart.style.left=Math.random()*100+'vw'; heart.style.fontSize=(18+Math.random()*22)+'px';
+      heart.style.animationDuration=(3.5+Math.random()*2)+'s'; document.body.append(heart);
+      setTimeout(()=>heart.remove(),6000);
+    }
+  </script>
+</body>
+</html>
+
